@@ -1,18 +1,8 @@
 package com.keyfox.utils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.MongoClientOptions;
 import com.mongodb.MongoClientOptions.Builder;
 import com.mongodb.WriteConcern;
 import com.mongodb.client.MongoCollection;
@@ -21,6 +11,11 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
+import java.util.ArrayList;
+import java.util.List;
+import org.bson.Document;
+import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 /**
  * MongoDB工具类 Mongo实例代表了一个数据库连接池，即使在多线程的环境中，一个Mongo实例对我们来说已经足够了<br>
@@ -50,7 +45,7 @@ public enum MongoDBUtils {
 
         // 大部分用户使用mongodb都在安全内网下，但如果将mongodb设为安全验证模式，就需要在客户端提供用户名和密码：
         // boolean auth = db.authenticate(myUserName, myPassword);
-        Builder options = new MongoClientOptions.Builder();
+        Builder options = new Builder();
         // options.autoConnectRetry(true);// 自动重连true
         // options.maxAutoConnectRetryTime(10); // the maximum auto connect retry time
         options.connectionsPerHost(300);// 连接池设置为300个连接,默认为100
