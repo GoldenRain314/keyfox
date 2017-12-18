@@ -110,7 +110,12 @@ public class ZJPFileListener implements FileAlterationListener {
         }
 
         //有文件变更后使用
-        
+        System.out.println("变更文件数据后的导入");
+        MongoCursor<Document> cursorUpdate = coll.find().iterator();
+        while (cursorUpdate.hasNext()){
+            importData(coll, cursorUpdate.next());
+            cursorUpdate.hasNext();
+        }
 
     }
 
