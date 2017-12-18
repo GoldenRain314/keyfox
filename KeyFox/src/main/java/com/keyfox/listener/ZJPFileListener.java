@@ -32,8 +32,8 @@ public class ZJPFileListener implements FileAlterationListener {
             return;
         }
         for (File file : files) {
-            System.out.println(file.getAbsoluteFile());
-            MongoCursor<Document> cursor = coll.find(Filters.eq("tableName", file.getName())).iterator();
+            MongoCursor<Document> cursor = coll.find(Filters.eq("tableName", file.getName()))
+                .iterator();
             if (cursor.hasNext()) {
                 continue;
             }
@@ -65,12 +65,22 @@ public class ZJPFileListener implements FileAlterationListener {
     }
 
     public void onFileChange(File file) {
-        System.out.println(file.getAbsoluteFile());
+        System.out.println("chage    " + file.getAbsoluteFile());
 
-
-
-
-
+        String dbName = "test";
+        String collName = "table";
+        MongoCollection<Document> coll = MongoDBUtils.instance.createColl(dbName, collName);
+        MongoCursor<Document> cursor = coll.find(Filters.eq("tableName", file.getName()))
+            .iterator();
+        if (!cursor.hasNext()) {
+            return;
+        }
+        Document document = cursor.next();
+        if (document.getInteger("state") != 2) {
+            return;
+        }
+        //继续导入
+        importData(coll, document);
     }
 
     public void onFileDelete(File file) {
@@ -87,17 +97,21 @@ public class ZJPFileListener implements FileAlterationListener {
         MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
         MongoCursor<Document> cursor = coll.find(Filters.eq("state", 1)).iterator();
         if (cursor.hasNext()) {
-            importData(coll,cursor.next());
+            importData(coll, cursor.next());
             return;
         }
 
         MongoCursor<Document> cursorExist = coll.find(Filters.eq("state", 0)).iterator();
-        if (!cursorExist.hasNext()) {
+        if (cursorExist.hasNext()) {
+            Document newdoc = cursorExist.next();
+            newdoc.put("state", 1);
+            MongoDBUtils.instance.updateById(coll, newdoc.getObjectId("_id").toString(), newdoc);
             return;
         }
-        Document newdoc = cursorExist.next();
-        newdoc.put("state", 1);
-        MongoDBUtils.instance.updateById(coll, newdoc.getObjectId("_id").toString(), newdoc);
+
+        //有文件变更后使用
+        
+
     }
 
     private void importData(MongoCollection<Document> collTable, Document doc) {
@@ -105,21 +119,25 @@ public class ZJPFileListener implements FileAlterationListener {
         String collName = "total";
         MongoCollection<DBObject> coll = MongoDBUtils.instance.createCollObjeck(dbName, collName);
 
-        File file = new File("C:\\Users\\Administrator\\Desktop\\probe\\Total\\" + doc.getString("tableName"));
+        System.out.println("===========================================正在导入  " + doc.getString("tableName") + "   数据");
+
+        File file = new File(
+            "C:\\Users\\Administrator\\Desktop\\probe\\Total\\" + doc.getString("tableName"));
         boolean flag = true;
         while (flag) {
             String data = FileUtils.readAppointedLineNumber(file, doc.getInteger("line"));
-            if(data == null){
+            if (data == null) {
                 flag = false;
+                continue;
             }
             coll.insertOne((DBObject) JSON.parse(data));
             System.out.println(data);
             //更新计数
-            doc.append("line",doc.getInteger("line") + 1);
+            doc.append("line", doc.getInteger("line") + 1);
             MongoDBUtils.instance.updateById(collTable, doc.getObjectId("_id").toString(), doc);
 
         }
-        doc.append("state",2);
+        doc.append("state", 2);
         MongoDBUtils.instance.updateById(collTable, doc.getObjectId("_id").toString(), doc);
     }
 
