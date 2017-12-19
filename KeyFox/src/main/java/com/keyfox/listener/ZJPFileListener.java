@@ -110,7 +110,7 @@ public class ZJPFileListener implements FileAlterationListener {
         //有文件变更后使用
         System.out.println("变更文件数据后的导入");
         MongoCursor<Document> cursorUpdate = coll.find().iterator();
-        while (cursorUpdate.hasNext()){
+        while (cursorUpdate.hasNext()) {
             importData(coll, cursorUpdate.next());
             cursorUpdate.hasNext();
         }
@@ -122,7 +122,9 @@ public class ZJPFileListener implements FileAlterationListener {
         String collName = "total";
         MongoCollection<DBObject> coll = MongoDBUtils.instance.createCollObjeck(dbName, collName);
 
-        System.out.println("===========================================正在导入  " + doc.getString("tableName") + "   数据");
+        System.out.println(
+            "=========================+==================正在导入  " + doc.getString("tableName")
+                + "   数据");
 
         File file = new File(
             "C:\\Users\\Administrator\\Desktop\\probe\\Total\\" + doc.getString("tableName"));

@@ -1,7 +1,12 @@
 package com.keyfox.controller;
 
+import com.keyfox.entity.LineDiagramEntity;
 import com.keyfox.listener.ZJPFileListener;
 import com.keyfox.listener.ZJPFileMonitor;
+import com.keyfox.service.FlowCountService;
+import javax.annotation.Resource;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/hello")
 public class TestController {
 
+    @Resource
+    private FlowCountService flowCountService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public ModelAndView list() {
@@ -36,8 +43,24 @@ public class TestController {
 
     @RequestMapping(value = "/dataJson")
     @ResponseBody
-    public String dataJson() {
-    String a = "{\"a\":\"1\"}";
-        return a;
+    public JSONObject dataJson() {
+        LineDiagramEntity lineDiagramEntity = flowCountService.selectFlowCount("2017-12-10");
+        JSONObject jsonObject = JSONObject.fromObject(lineDiagramEntity);
+       //System.out.println(jsonObject);
+        return jsonObject;
+    }
+
+    @RequestMapping(value = "/dataJson2")
+    @ResponseBody
+    public JSONArray dataJson2() {
+        JSONArray lineDiagramEntity = flowCountService.selectFlow("2017-12-10");
+        //System.out.println(jsonObject);
+        return lineDiagramEntity;
+    }
+
+    @RequestMapping(value = "/list2", method = RequestMethod.GET)
+    public ModelAndView list2() {
+        ModelAndView mav = new ModelAndView("/list2");
+        return mav;
     }
 }
