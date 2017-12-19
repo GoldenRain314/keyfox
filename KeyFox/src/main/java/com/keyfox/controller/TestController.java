@@ -5,6 +5,7 @@ import com.keyfox.listener.ZJPFileMonitor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -31,5 +32,12 @@ public class TestController {
             e.printStackTrace();
         }
         return "success";
+    }
+
+    @RequestMapping(value = "/dataJson")
+    @ResponseBody
+    public String dataJson() {
+    String a = "{\"a\":\"1\"}";
+        return a;
     }
 }
