@@ -1,7 +1,6 @@
 var myChart = echarts.init(document.getElementById('main'));
 
-$.get('dataJson').done(function (data) {
-  console.info(data);
+$.get('dataJsonLine').done(function (data) {
   myChart.setOption({
     title: {
       text: '流量信息'
@@ -16,7 +15,7 @@ $.get('dataJson').done(function (data) {
       }
     },
     legend: {
-      data: ['UDP', 'IPV4', 'TCP', 'IPV6']
+      data: data
     },
     toolbox: {
       feature: {
@@ -40,35 +39,52 @@ $.get('dataJson').done(function (data) {
         name: 'MbPS'
       }
     ],
-    series: [
-      {
-        name: 'UDP',
-        type: 'line',
-        stack: '总量',
-        areaStyle: {normal: {}},
-        data: data.UDP
-      },
-      {
-        name: 'IPV4',
-        type: 'line',
-        stack: '总量',
-        areaStyle: {normal: {}},
-        data: data.IPV4
-      },
-      {
-        name: 'TCP',
-        type: 'line',
-        stack: '总量',
-        areaStyle: {normal: {}},
-        data: data.TCP
-      },
-      {
-        name: 'IPV6',
-        type: 'line',
-        stack: '总量',
-        areaStyle: {normal: {}},
-        data: data.IPV6
-      }
-    ]
+    series: data
   });
 });
+
+
+var heliuMain = echarts.init(document.getElementById('heliuMain'));
+
+$.get('dataJsonThemeRiver').done(function (data) {
+  console.log(data);
+  heliuMain.setOption({
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'line',
+        lineStyle: {
+          color: 'rgba(0,0,0,0.2)',
+          width: 1,
+          type: 'solid'
+        }
+      }
+    },
+
+
+
+    singleAxis: {
+      top: 50,
+      bottom: 50,
+      axisTick: {},
+      axisLabel: {},
+      type: 'time',
+      axisPointer: {
+        animation: true,
+        label: {
+          show: true
+        }
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          type: 'dashed',
+          opacity: 0.2
+        }
+      }
+    },
+
+    series: data
+  });
+});
+

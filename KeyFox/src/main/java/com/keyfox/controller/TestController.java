@@ -50,11 +50,19 @@ public class TestController {
         return jsonObject;
     }
 
-    @RequestMapping(value = "/dataJson2")
+    @RequestMapping(value = "/dataJsonLine")
     @ResponseBody
-    public JSONArray dataJson2() {
+    public JSONArray dataJsonLine() {
         JSONArray lineDiagramEntity = flowCountService.selectFlow("2017-12-10");
         //System.out.println(jsonObject);
+        return lineDiagramEntity;
+    }
+
+    @RequestMapping(value = "/dataJsonThemeRiver")
+    @ResponseBody
+    public JSONArray dataJsonThemeRiver() {
+        JSONArray lineDiagramEntity = flowCountService.themeRiver("2017-12-10");
+        System.out.println(lineDiagramEntity);
         return lineDiagramEntity;
     }
 

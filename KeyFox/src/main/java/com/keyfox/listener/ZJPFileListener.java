@@ -18,21 +18,22 @@ import org.bson.Document;
  */
 public class ZJPFileListener implements FileAlterationListener {
 
+    private String dbName = "test";
+    private String path = "C:\\Users\\Administrator\\Desktop\\probe\\Total\\";
 
     public void onStart(FileAlterationObserver fileAlterationObserver) {
         System.out.println("onStart");
-        String dbName = "test";
         String collName = "table";
         MongoCollection<Document> coll = MongoDBUtils.instance.createColl(dbName, collName);
 
-        File files[] = FileUtils.getFileName("C:\\Users\\Administrator\\Desktop\\probe\\Total\\");
+        File files[] = FileUtils.getFileName(path);
         if (files == null) {
             return;
         }
         for (File file : files) {
-            MongoCursor<Document> cursor = coll.find(Filters.eq("tableName", file.getName()))
+            MongoCursor<Document> curso = coll.find(Filters.eq("tableName", file.getName()))
                 .iterator();
-            if (cursor.hasNext()) {
+            if (curso.hasNext()) {
                 continue;
             }
             Document doc = new Document();
@@ -63,22 +64,22 @@ public class ZJPFileListener implements FileAlterationListener {
     }
 
     public void onFileChange(File file) {
-        System.out.println("chage    " + file.getAbsoluteFile());
 
-        String dbName = "test";
-        String collName = "table";
-        MongoCollection<Document> coll = MongoDBUtils.instance.createColl(dbName, collName);
-        MongoCursor<Document> cursor = coll.find(Filters.eq("tableName", file.getName()))
-            .iterator();
-        if (!cursor.hasNext()) {
-            return;
-        }
-        Document document = cursor.next();
-        if (document.getInteger("state") != 2) {
-            return;
-        }
-        //继续导入
-        importData(coll, document);
+        //当文件内容改变没有触发
+//        System.out.println("chage" + file.getAbsoluteFile());
+//        String collName = "table";
+//        MongoCollection<Document> coll = MongoDBUtils.instance.createColl(dbName, collName);
+//        MongoCursor<Document> cursor = coll.find(Filters.eq("tableName", file.getName()))
+//            .iterator();
+//        if (!cursor.hasNext()) {
+//            return;
+//        }
+//        Document document = cursor.next();
+//        if (document.getInteger("state") != 2) {
+//            return;
+//        }
+//        //继续导入
+//        importData(coll, document);
     }
 
     public void onFileDelete(File file) {
@@ -90,7 +91,6 @@ public class ZJPFileListener implements FileAlterationListener {
     }
 
     private void foreachTable() {
-        String dbName = "test";
         String collName = "table";
         MongoCollection<Document> coll = MongoDBUtils.instance.getCollection(dbName, collName);
         MongoCursor<Document> cursor = coll.find(Filters.eq("state", 1)).iterator();

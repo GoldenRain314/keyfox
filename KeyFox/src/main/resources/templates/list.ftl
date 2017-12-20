@@ -17,7 +17,8 @@
       <h2>图表展示</h2>
     </div>
     <div class="panel-body">
-      <div id="main" style="width: 700px;height:400px;"></div>
+      <div id="main" style="width: 1000px;height:400px;"></div><hr>
+      <div id="heliuMain" style="width: 1000px;height:400px;"></div><hr>
     </div>
   </div>
 </div>

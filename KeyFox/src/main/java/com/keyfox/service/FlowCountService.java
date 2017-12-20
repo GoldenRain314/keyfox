@@ -15,4 +15,6 @@ public interface  FlowCountService {
     LineDiagramEntity selectFlowCount(String date);
 
     JSONArray selectFlow(String date);
+
+    JSONArray themeRiver(String date);
 }
